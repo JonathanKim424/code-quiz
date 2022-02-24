@@ -1,0 +1,42 @@
+/* General Styles Start */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+/* General Styles End */
+
+/* Header, High Scores, and Timer Start */
+header h1 {
+    text-align: center;
+}
+
+.game-header {
+    display: flex;
+}
+
+.highscore {
+    flex: 1;
+    text-align: left;
+    color: #ff00ff;
+    margin-left: 15px;
+}
+
+.disp-time {
+    flex: 1;
+    text-align: right;
+    margin-right: 15px;
+}
+/* Header, High Scores, and Timer End */
+
+/* Main Content Start */
+
+/* Main Content End */
+
+/* Footer Start */
+footer {
+    text-align: center;
+}
+/* Footer End */
