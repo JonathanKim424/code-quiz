@@ -75,7 +75,7 @@ var startQuiz = function() {
 var quizQuestion = function() {
     windowEl.innerHTML = "";
 
-    // need to figure out how to randomize questions such that a finite list of options run
+    // bit time error, runs question randomizer before comparing answers for previous question
     var ranQue = Math.floor(Math.random()*questionList.length);
     currQuestion = questionList[ranQue];
     questionList.splice(ranQue, 1);
@@ -111,7 +111,14 @@ var finalScore = function() {
 
 var answerCheck = function(targetEl) {
     var playerAns = targetEl.textContent.slice(3, targetEl.textContent.length);
-
+    var answerCheckEl = document.createElement("div");
+    answerCheckEl.className = "answer-check";
+    if (playerAns === currQuestion.correctanswer) {
+        answerCheckEl.textContent = "Correct!";
+    }
+    else {
+        answerCheckEl.textContent = "Wrong!";
+    }
 
     if (questionList.length > 0) {
         quizQuestion();
@@ -119,16 +126,7 @@ var answerCheck = function(targetEl) {
     else {
         finalScore();
     }
-
-    var answerCheckEl = document.createElement("div");
-    answerCheckEl.className = "answer-check";
     windowEl.appendChild(answerCheckEl);
-    if (playerAns === currQuestion.correctanswer) {
-        answerCheckEl.textContent = "Correct!";
-    }
-    else {
-        answerCheckEl.textContent = "Wrong!";
-    }
 
     console.log(currQuestion.question);
     console.log("Input: " + playerAns);
