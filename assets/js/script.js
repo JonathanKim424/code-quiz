@@ -42,6 +42,7 @@ var question5 = {
 var questionList = [question0, question1, question2, question3, question4, question5]
 
 var timer = 0;
+var timerStop = 0;
 
 var loadedHighScores;
 
@@ -76,7 +77,7 @@ var startQuiz = function() {
     var setTimer = setInterval(function() {
         timer = timer - 1;
         dispTimeEl.textContent = "Time: " + timer;
-        if (timer === 0) {
+        if (timer === 0 || timerStop === 1) {
             clearInterval(setTimer);
         }
     }, 1000);
@@ -133,13 +134,17 @@ var answerCheck = function(targetEl) {
 };
 
 var finalScore = function() {
-    clearInterval(setTimer);
+    timerStop = 1;
     var score = timer;
+
     windowEl.innerHTML = "";
 
     var quizEndEl = document.createElement("div");
     windowEl.appendChild(quizEndEl);
-    quizEndEl.textContent = "All done!";
+    quizEndEl.innerHTML = "<h2>All done!</h2>";
+
+    var highscoreFormEl = document.createElement("form");
+    windowEl.appendChild(highscoreFormEl);
 };
 
 var highScoreScreen = function() {
