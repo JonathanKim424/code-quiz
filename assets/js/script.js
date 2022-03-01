@@ -39,12 +39,15 @@ var question5 = {
     answers: ["answer1", "answer2", "answer3", "answer4"],
     correctanswer: "answer2"
 };
-
 var questionList = [question0, question1, question2, question3, question4, question5]
+
+var timer = 0;
+
+var loadedHighScores;
 
 var introScreen = function() {
     highscoreEl.innerHTML = "<a id='highscore' href='#'>View high scores</a>";
-    dispTimeEl.innerHTML = "Time: <span id='timer'>0</span>";
+    dispTimeEl.textContent = "Time: " + timer;
     windowEl.innerHTML = "";
     var mainHTML =
         "<h2>Coding Quiz challenge</h2>" +
@@ -65,22 +68,30 @@ var introScreen = function() {
     actionContainerEl.appendChild(startBtnEl);
 };
 
+// Error can't pass timer function to final score function
 var startQuiz = function() {
     // start the timer
+    timer = 60;
+    dispTimeEl.textContent = "Time: " + timer;
+    var setTimer = setInterval(function() {
+        timer = timer - 1;
+        dispTimeEl.textContent = "Time: " + timer;
+        if (timer === 0) {
+            clearInterval(setTimer);
+        }
+    }, 1000);
+
     // run the quiz function
     highscoreEl.innerHTML = "";
     quizQuestion();
-}
+};
 
 var quizQuestion = function() {
     windowEl.innerHTML = "";
 
-    // bit time error, runs question randomizer before comparing answers for previous question
     var ranQue = Math.floor(Math.random()*questionList.length);
     currQuestion = questionList[ranQue];
     questionList.splice(ranQue, 1);
-
-    console.log(currQuestion.question);
 
     var quizQuestionEl = document.createElement("div");
     quizQuestionEl.className = "quiz-question";
@@ -101,14 +112,6 @@ var quizQuestion = function() {
     }
 };
 
-var finalScore = function() {
-    windowEl.innerHTML = "";
-
-    var quizEndEl = document.createElement("div");
-    windowEl.appendChild(quizEndEl);
-    quizEndEl.textContent = "All done!";
-};
-
 var answerCheck = function(targetEl) {
     var playerAns = targetEl.textContent.slice(3, targetEl.textContent.length);
     var answerCheckEl = document.createElement("div");
@@ -127,14 +130,19 @@ var answerCheck = function(targetEl) {
         finalScore();
     }
     windowEl.appendChild(answerCheckEl);
-
-    console.log(currQuestion.question);
-    console.log("Input: " + playerAns);
-    console.log("Answer: " + currQuestion.correctanswer);
-    console.log(answerCheckEl.textContent);
 };
 
-var loadHighScore = function() {
+var finalScore = function() {
+    clearInterval(setTimer);
+    var score = timer;
+    windowEl.innerHTML = "";
+
+    var quizEndEl = document.createElement("div");
+    windowEl.appendChild(quizEndEl);
+    quizEndEl.textContent = "All done!";
+};
+
+var highScoreScreen = function() {
     highscoreEl.innerHTML = "";
     dispTimeEl.innerHTML = "";
     windowEl.innerHTML = "";
@@ -158,22 +166,6 @@ var loadHighScore = function() {
 
     actionContainerEl.appendChild(goBackBtnEl);
     actionContainerEl.appendChild(clearHighScoreBtnEl);
-    //
-    //for (var i = 0; i < 10; i++) {
-    //    var listScore = document.createElement("li");
-    //    listScore.className = "highScoreList";
-    //    
-    //}
-
-
-    //var savedScores = localStorage.getItem("highScores");
-
-    //if (!savedScores) {
-    //    console.log("No high scores to load!");
-    //    return false;
-    //}
-
-    //savedScores = JSON.parse(savedScores);
 };
 
 var taskHandler = function(event) {
@@ -188,7 +180,7 @@ var taskHandler = function(event) {
     }
 
     if (targetEl.matches("#highscore")) {
-        loadHighScore();
+        highScoreScreen();
     }
 
     if (targetEl.matches(".goBack-btn")) {
@@ -196,6 +188,17 @@ var taskHandler = function(event) {
     }
 };
 
+var loadHighScore = function() {
+    var savedHighScores = localStorage.getItem("highScores");
+
+    if (!savedHighScores) {
+        console.log("No high scores to load!");
+        return false;
+    }
+
+    loadedHighScores = JSON.parse(savedHighScores);
+};
 
 introScreen();
+loadHighScore();
 pageContentEl.addEventListener("click", taskHandler);
