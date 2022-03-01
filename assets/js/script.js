@@ -66,10 +66,21 @@ var introScreen = function() {
 };
 
 var startQuiz = function() {
+    // start the timer
+    // run the quiz function
     highscoreEl.innerHTML = "";
+    quizQuestion();
+}
+
+var quizQuestion = function() {
     windowEl.innerHTML = "";
 
-    currQuestion = question0;
+    // need to figure out how to randomize questions such that a finite list of options run
+    var ranQue = Math.floor(Math.random()*questionList.length);
+    currQuestion = questionList[ranQue];
+    questionList.splice(ranQue, 1);
+
+    console.log(currQuestion.question);
 
     var quizQuestionEl = document.createElement("div");
     quizQuestionEl.className = "quiz-question";
@@ -90,13 +101,39 @@ var startQuiz = function() {
     }
 };
 
+var finalScore = function() {
+    windowEl.innerHTML = "";
+
+    var quizEndEl = document.createElement("div");
+    windowEl.appendChild(quizEndEl);
+    quizEndEl.textContent = "All done!";
+};
+
 var answerCheck = function(targetEl) {
-    if (targetEl.textContent.slice(3, targetEl.textContent.length) === currQuestion.correctanswer) {
-        console.log("Correct Answer!!");
+    var playerAns = targetEl.textContent.slice(3, targetEl.textContent.length);
+
+
+    if (questionList.length > 0) {
+        quizQuestion();
     }
     else {
-        console.log("Wrong answer!");
+        finalScore();
     }
+
+    var answerCheckEl = document.createElement("div");
+    answerCheckEl.className = "answer-check";
+    windowEl.appendChild(answerCheckEl);
+    if (playerAns === currQuestion.correctanswer) {
+        answerCheckEl.textContent = "Correct!";
+    }
+    else {
+        answerCheckEl.textContent = "Wrong!";
+    }
+
+    console.log(currQuestion.question);
+    console.log("Input: " + playerAns);
+    console.log("Answer: " + currQuestion.correctanswer);
+    console.log(answerCheckEl.textContent);
 };
 
 var loadHighScore = function() {
