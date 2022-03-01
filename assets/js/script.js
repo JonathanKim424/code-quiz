@@ -3,12 +3,44 @@ var highscoreEl = document.querySelector(".highscore");
 var dispTimeEl = document.querySelector(".disp-time");
 var windowEl = document.querySelector(".main-window");
 
-var question1 = {
-    qId: 1,
+var currQuestion;
+var question0 = {
     question: "Arrays in JavaScript can be used to store ______.",
     answers: ["numbers and strings", "other arrays", "booleans", "all of the above"],
     correctanswer: "booleans"
 };
+
+var question1 = {
+    question: "Test question 1?",
+    answers: ["answer1", "answer2", "answer3", "answer4"],
+    correctanswer: "answer2"
+};
+
+var question2 = {
+    question: "Test question 2?",
+    answers: ["answer1", "answer2", "answer3", "answer4"],
+    correctanswer: "answer2"
+};
+
+var question3 = {
+    question: "Test question 3?",
+    answers: ["answer1", "answer2", "answer3", "answer4"],
+    correctanswer: "answer2"
+};
+
+var question4 = {
+    question: "Test question 4?",
+    answers: ["answer1", "answer2", "answer3", "answer4"],
+    correctanswer: "answer2"
+};
+
+var question5 = {
+    question: "Test question 5?",
+    answers: ["answer1", "answer2", "answer3", "answer4"],
+    correctanswer: "answer2"
+};
+
+var questionList = [question0, question1, question2, question3, question4, question5]
 
 var introScreen = function() {
     highscoreEl.innerHTML = "<a id='highscore' href='#'>View high scores</a>";
@@ -37,17 +69,19 @@ var startQuiz = function() {
     highscoreEl.innerHTML = "";
     windowEl.innerHTML = "";
 
+    currQuestion = question0;
+
     var quizQuestionEl = document.createElement("div");
     quizQuestionEl.className = "quiz-question";
-    quizQuestionEl.innerHTML = question1.question;
+    quizQuestionEl.innerHTML = currQuestion.question;
     windowEl.appendChild(quizQuestionEl);
 
     var actionContainerEl = document.createElement("div");
     windowEl.appendChild(actionContainerEl);
     for (var i = 0; i < 4; i++) {
-        var ranAns = Math.floor(Math.random()*question1.answers.length);
-        var answerText = question1.answers[ranAns];
-        question1.answers.splice(ranAns, 1);
+        var ranAns = Math.floor(Math.random()*currQuestion.answers.length);
+        var answerText = currQuestion.answers[ranAns];
+        currQuestion.answers.splice(ranAns, 1);
 
         var answerButtonEl = document.createElement("button");
         answerButtonEl.className = "btn ans-btn";
@@ -57,7 +91,12 @@ var startQuiz = function() {
 };
 
 var answerCheck = function(targetEl) {
-    console.log(targetEl.textContent);
+    if (targetEl.textContent.slice(3, targetEl.textContent.length) === currQuestion.correctanswer) {
+        console.log("Correct Answer!!");
+    }
+    else {
+        console.log("Wrong answer!");
+    }
 };
 
 var loadHighScore = function() {
