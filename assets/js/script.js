@@ -4,6 +4,7 @@ var dispTimeEl = document.querySelector(".disp-time");
 var windowEl = document.querySelector(".main-window");
 
 var currQuestion;
+var questionList;
 var question0 = {
     question: "Arrays in JavaScript can be used to store ______.",
     answers: ["numbers and strings", "other arrays", "booleans", "all of the above"],
@@ -39,14 +40,16 @@ var question5 = {
     answers: ["answer1", "answer2", "answer3", "answer4"],
     correctanswer: "answer2"
 };
-var questionList = [question0, question1, question2, question3, question4, question5]
 
-var timer = 0;
-var timerStop = 0;
+var timer;
+var timerStop;
 
-var loadedHighScores;
+var loadedHighScores = [];
 
 var introScreen = function() {
+    questionList = [question0, question1, question2, question3, question4, question5];
+    timer = 0;
+    timerStop = 0;
     highscoreEl.innerHTML = "<a id='highscore' href='#'>View high scores</a>";
     dispTimeEl.textContent = "Time: " + timer;
     windowEl.innerHTML = "";
@@ -69,7 +72,6 @@ var introScreen = function() {
     actionContainerEl.appendChild(startBtnEl);
 };
 
-// Error can't pass timer function to final score function
 var startQuiz = function() {
     // start the timer
     timer = 60;
@@ -122,6 +124,7 @@ var answerCheck = function(targetEl) {
     }
     else {
         answerCheckEl.textContent = "Wrong!";
+        timer = timer - 10;
     }
 
     if (questionList.length > 0) {
@@ -135,16 +138,56 @@ var answerCheck = function(targetEl) {
 
 var finalScore = function() {
     timerStop = 1;
-    var score = timer;
+    var score = timer - 1;
 
     windowEl.innerHTML = "";
 
     var quizEndEl = document.createElement("div");
     windowEl.appendChild(quizEndEl);
-    quizEndEl.innerHTML = "<h2>All done!</h2>";
+    quizEndEl.innerHTML =
+        "<h2>All done!</h2>" +
+        "<p>Your final score is " + score + ".";
 
     var highscoreFormEl = document.createElement("form");
+    highscoreFormEl.innerHTML = 
+        "Enter initials: " +
+        "<input type='text' name='score-name'/> " +
+        "<button class='btn' id='save-score' type='submit'>Submit</button>";
     windowEl.appendChild(highscoreFormEl);
+};
+
+var saveHighScore = function(event) {
+    event.preventDefault();
+
+    var initialInputEl = document.querySelector("input[name='score-name']").value;
+    console.log(initialInputEl);
+    if (!initialInputEl) {
+        alert("You need to enter your initials!");
+        return false;
+    }
+
+    for (var i = 0; i < 10; i++) {
+        if (timer > loadedHighScores[i].score) {
+            var highscoreObj = {
+                name: initialInputEl,
+                score: timer
+            };
+
+            loadedHighScores.splice(i, 0, highscoreObj);
+
+            if (loadedHighScores.length > 10) {
+                loadedHighScores.pop();
+            }
+
+            break;
+        }
+    }
+
+    console.log(loadedHighScores);
+
+    localStorage.setItem("highScores", JSON.stringify(loadedHighScores));
+
+    highScoreScreen();
 };
 
 var highScoreScreen = function() {
@@ -152,14 +195,20 @@ var highScoreScreen = function() {
     dispTimeEl.innerHTML = "";
     windowEl.innerHTML = "";
     
-    var mainWindowEl = document.createElement("div");
-    mainWindowEl.className = "high-score-window";
-    mainWindowEl.innerHTML = "<h2>High Scores!!!</h2>";
-    windowEl.appendChild(mainWindowEl);
+    windowEl.innerHTML = "<h2>High Scores!!!</h2>";
+
+    var highScoreListEl = document.createElement("ol");
+    windowEl.appendChild(highScoreListEl);
+
+    for (var i = 0; i < 10; i++) {
+        var highScoreItemEl = document.createElement("li");
+        highScoreItemEl.textContent = loadedHighScores[i].name + " - " + loadedHighScores[i].score;
+        highScoreListEl.appendChild(highScoreItemEl);
+    }
 
     var actionContainerEl = document.createElement("div");
     actionContainerEl.className = "highscore-btns";
-    mainWindowEl.appendChild(actionContainerEl);
+    windowEl.appendChild(actionContainerEl);
 
     var goBackBtnEl = document.createElement("button");
     goBackBtnEl.textContent = "Go Back";
@@ -173,6 +222,23 @@ var highScoreScreen = function() {
     actionContainerEl.appendChild(clearHighScoreBtnEl);
 };
 
+var clearHighScores = function() {
+    var clearHSConfirm = window.confirm("Are you sure you want to clear high scores?");
+
+    if (clearHSConfirm) {
+        for (var i = 0; i < 10; i++) {
+            var highscoreObj = {
+                name: "??",
+                score: 0
+            };
+            loadedHighScores[i] = highscoreObj;
+        }
+        localStorage.setItem("highScores", JSON.stringify(loadedHighScores));
+        highScoreScreen();
+    }
+    return false;
+};
+
 var taskHandler = function(event) {
     var targetEl = event.target;
 
@@ -184,12 +250,20 @@ var taskHandler = function(event) {
         answerCheck(targetEl);
     }
 
+    if (targetEl.matches("#save-score")) {
+        saveHighScore(event);
+    }
+
     if (targetEl.matches("#highscore")) {
         highScoreScreen();
     }
 
     if (targetEl.matches(".goBack-btn")) {
         introScreen();
+    }
+
+    if (targetEl.matches(".clearHighScores-btn")) {
+        clearHighScores();
     }
 };
 
@@ -198,6 +272,13 @@ var loadHighScore = function() {
 
     if (!savedHighScores) {
         console.log("No high scores to load!");
+        for (var i = 0; i < 10; i++) {
+            var highscoreObj = {
+                name: "??",
+                score: 0
+            };
+            loadedHighScores.push(highscoreObj);
+        }
         return false;
     }
 
