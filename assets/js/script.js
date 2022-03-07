@@ -8,40 +8,40 @@ var windowEl = document.querySelector(".main-window");
 var currQuestion;
 var questionList;
 var question0 = {
-    question: "Arrays in JavaScript can be used to store ______.",
-    answers: ["numbers and strings", "other arrays", "booleans", "all of the above"],
-    correctanswer: "booleans"
+    question: "Inside which HTML element do we puth the JavaScript?",
+    answers: ["<scripting>", "<javascript>", "<script>", "<js>"],
+    correctanswer: "<script>"
 };
 
 var question1 = {
-    question: "Test question 1?",
-    answers: ["answer1", "answer2", "answer3", "answer4"],
-    correctanswer: "answer2"
+    question: "Which of these values is NOT considered false?",
+    answers: ["0", '"0"', "null", '""'],
+    correctanswer: '"0"'
 };
 
 var question2 = {
-    question: "Test question 2?",
-    answers: ["answer1", "answer2", "answer3", "answer4"],
-    correctanswer: "answer2"
+    question: "How to write an IF statement in JavaScript?",
+    answers: ["if i = 5 then", "if (i == 5) {}", "if i == 5 then", "if i = 5 {}"],
+    correctanswer: "if (i == 5) {}"
 };
 
 var question3 = {
-    question: "Test question 3?",
-    answers: ["answer1", "answer2", "answer3", "answer4"],
-    correctanswer: "answer2"
+    question: "How does a FOR loop start?",
+    answers: ["for (i = 0; i <= 5; i++) {}", "for i = 1 to 5 {}", "for (i <= 5; i++) {}", "for (i = 0; i <= 5) {}"],
+    correctanswer: "for (i = 0; i <= 5; i++) {}"
 };
 
 var question4 = {
-    question: "Test question 4?",
-    answers: ["answer1", "answer2", "answer3", "answer4"],
-    correctanswer: "answer2"
+    question: "How can you add a comment in a JavaScript?",
+    answers: ["// this is a comment", "<!-- this is a comment -->", "# this is a comment", "'this is a comment'"],
+    correctanswer: "// this is a comment"
 };
 
 var question5 = {
-    question: "Test question 5?",
-    answers: ["answer1", "answer2", "answer3", "answer4"],
-    correctanswer: "answer2"
-};
+    question: "How do you find the number with the highest value of x and y?",
+    answers: ["ceil(x,y)", "top(x,y)", "Math.ceil(x,y)", "Math.max(x,y)"],
+    correctanswer: "Math.max(x,y)"
+}
 
 // define variables related to the timer function
 var timer;
@@ -65,7 +65,7 @@ var introScreen = function() {
     // deletes any existing HTML in the window element and replaces content
     windowEl.innerHTML = "";
     var mainHTML =
-        "<h2>Coding Quiz challenge</h2>" +
+        "<h2>Coding Quiz Challenge</h2>" +
         "Try to answer the following code-related questions within the time limit.<br>" +
         "Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
 
@@ -123,7 +123,14 @@ var quizQuestion = function() {
     quizQuestionEl.innerHTML = currQuestion.question;
     windowEl.appendChild(quizQuestionEl);
 
+    // break element for formatting
+    var breakEl = document.createElement("div");
+    breakEl.className = "break";
+    windowEl.appendChild(breakEl);
+
+    // container for answer buttons
     var actionContainerEl = document.createElement("div");
+    actionContainerEl.className = "ansBtn"
     windowEl.appendChild(actionContainerEl);
     // generates answer buttons
     for (var i = 0; i < 4; i++) {
@@ -163,9 +170,15 @@ var answerCheck = function(targetEl) {
         quizQuestion();
     }
     else {
-        // if no, continues to result screen
+        // if no, ends game and displays result screen
         finalScore();
     }
+
+    // break element for formatting
+    var breakEl = document.createElement("div");
+    breakEl.className = "break";
+    windowEl.appendChild(breakEl);
+
     // appends the answer results to window
     windowEl.appendChild(answerCheckEl);
 };
@@ -177,15 +190,23 @@ var finalScore = function() {
     // disconnect between timer function and displayed time, offset for correction
     var score = timer - 1;
 
+    // clears window element and displays end game text, score, and user form for initials
     windowEl.innerHTML = "";
-
     var quizEndEl = document.createElement("div");
-    windowEl.appendChild(quizEndEl);
+    quizEndEl.className = "quizend"
     quizEndEl.innerHTML =
         "<h2>All done!</h2>" +
         "<p>Your final score is " + score + ".";
+    windowEl.appendChild(quizEndEl);
+
+    // break element for formatting
+    var break1El = document.createElement("div");
+    break1El.className = "break";
+    windowEl.appendChild(break1El);
+
     // create form to capture user input for high score
     var highscoreFormEl = document.createElement("form");
+    highscoreFormEl.className = "highscoreForm"
     highscoreFormEl.innerHTML = 
         "Enter initials: " +
         "<input type='text' name='score-name'/> " +
@@ -205,7 +226,7 @@ var saveHighScore = function(event) {
         return false;
     }
 
-    // cycles through existing high score
+    // cycles through existing high score such that scores are always logged from highest to lowest
     for (var i = 0; i < 10; i++) {
         // if current high score is higher than existing score, inserts score
         if (timer > loadedHighScores[i].score) {
@@ -239,16 +260,32 @@ var highScoreScreen = function() {
     dispTimeEl.innerHTML = "";
     windowEl.innerHTML = "";
     
-    windowEl.innerHTML = "<h2>High Scores!!!</h2>";
+    var headerEl = document.createElement("div");
+    headerEl.className = "highscoreheader"
+    headerEl.innerHTML = "<h2>High Scores!!!</h2>";
+    windowEl.appendChild(headerEl);
+
+    // break element for formatting
+    var break1El = document.createElement("div");
+    break1El.className = "break";
+    windowEl.appendChild(break1El);
 
     // creates ordered list that generates list item based on current high score list
-    var highScoreListEl = document.createElement("ol");
+    var highScoreListEl = document.createElement("div");
+    highScoreListEl.className = "highscorelist"
     windowEl.appendChild(highScoreListEl);
     for (var i = 0; i < 10; i++) {
-        var highScoreItemEl = document.createElement("li");
-        highScoreItemEl.textContent = loadedHighScores[i].name + " - " + loadedHighScores[i].score;
+        var highScoreItemEl = document.createElement("div");
+        highScoreItemEl.className = "highscoreitem"
+        var scorepos = i + 1;
+        highScoreItemEl.textContent = scorepos + ". " + loadedHighScores[i].name + " - " + loadedHighScores[i].score;
         highScoreListEl.appendChild(highScoreItemEl);
     }
+
+    // break element for formatting
+    var break2El = document.createElement("div");
+    break2El.className = "break";
+    windowEl.appendChild(break2El);
 
     // generates go back button and clear high score button
     var actionContainerEl = document.createElement("div");
@@ -289,7 +326,7 @@ var clearHighScores = function() {
     return false;
 };
 
-// universal handler for all click events based on target element
+// universal handler for all click events based on target class/id
 var taskHandler = function(event) {
     var targetEl = event.target;
 
@@ -338,6 +375,9 @@ var loadHighScore = function() {
     loadedHighScores = JSON.parse(savedHighScores);
 };
 
+// runs intro splash screen
 introScreen();
+// runs load high score function
 loadHighScore();
+// activates global event listener for clicks
 pageContentEl.addEventListener("click", taskHandler);
