@@ -91,11 +91,19 @@ var startQuiz = function() {
     var setTimer = setInterval(function() {
         // counts down timer every 1 second interval
         timer = timer - 1;
+        
+        if (timer <= 0) {
+            timer = 0;
+        }
+
         dispTimeEl.textContent = "Time: " + timer;
         // sets timer stop condition to either be 0 seconds or by
         // timerStop flag triggered by end of game
         if (timer === 0 || timerStop === 1) {
             clearInterval(setTimer);
+            if (timer === 0) {
+                finalScore();
+            }
         }
     }, 1000);
 
@@ -189,6 +197,10 @@ var finalScore = function() {
     timerStop = 1;
     // disconnect between timer function and displayed time, offset for correction
     var score = timer - 1;
+
+    if (score <= 0) {
+        score = 0;
+    }
 
     // clears window element and displays end game text, score, and user form for initials
     windowEl.innerHTML = "";
